@@ -1,11 +1,16 @@
+
 # LeetCode Pattern Tracker
 
-This project is a web-based tracker for the most common interview leetcode patterns, Its original intention was just to let me organize my progress better but now it's open for public contribution.
 
-## Features
+This project is a web-based tracker for the most common interview leetcode patterns, Its original intention was just to let me organize my progress better but now it's open for public contribution.
+Basic features:
 - Visual progress tracking by category and pattern
 - Easy marking of completed problems (progress saved in browser)
 - Modern, clean UI
+
+
+You can employ it for personal use [here](https://p4r1h.github.io/pattern-tracker)
+
 
 ## Contributing
 I welcome contributions to improve the tracker, follow these guidelines:
