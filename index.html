@@ -15,19 +15,18 @@
             --hover-color: #1a1a1a;
             --text-color: #e0e0e0;
             --text-muted: #888888;
-            --primary-color: #A78BFA;
-            --primary-color-tint: rgba(167, 139, 250, 0.15);
+            
+            --primary-color: #8B5CF6;
+            --primary-color-tint: rgba(139, 92, 246, 0.15);
+            --primary-gradient-start: #7C3AED;
+
             --secondary-accent-color: #FFB86C;
-            --primary-gradient-start: #8B5CF6;
             --progress-bg: #282828;
 
             /* --- LeetCode Difficulty Colors --- */
             --easy-color: #2DB55D;
-            --easy-color-tint: rgba(45, 181, 93, 0.15);
             --medium-color: #FFC01E;
-            --medium-color-tint: rgba(255, 192, 30, 0.15);
             --hard-color: #EF4743;
-            --hard-color-tint: rgba(239, 71, 67, 0.15);
         }
 
         *, *::before, *::after {
@@ -47,21 +46,28 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 800px; /* Reverted to original width */
             margin: 0 auto;
         }
-
+        
         h1 {
-            text-align: center;
-            font-weight: 600;
+            text-align: left;
+            font-weight: 700;
             font-size: 1.85rem;
-            color: var(--text-color);
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             letter-spacing: -0.75px;
+            color: var(--primary-color);
+        }
+
+        /* --- NEW: Reduce width of ONLY the title and progress bar --- */
+        h1, .overall-progress {
+            max-width: 98%;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .overall-progress {
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         .progress-bar {
@@ -79,13 +85,24 @@
             transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1);
             border-radius: 5px;
         }
-
+        
         .progress-label {
-            text-align: center;
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
-            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-title {
+            font-size: 1rem;
             font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .progress-stats {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
         }
 
         .category {
@@ -220,6 +237,7 @@
             gap: 0.75rem;
             flex-grow: 1;
             margin-right: 0.5rem;
+            min-width: 0;
         }
         
         .problem-item-right {
@@ -249,6 +267,8 @@
         .problem-name-link {
             text-decoration: none;
             color: var(--text-color);
+            display: flex;
+            min-width: 0;
         }
 
         .problem-name-wrapper {
@@ -271,6 +291,9 @@
         .problem-title {
             font-size: 0.9rem;
             transition: color 0.2s, text-decoration 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .problem-item input[type="checkbox"]:checked ~ .problem-name-link .problem-title {
@@ -279,11 +302,11 @@
         }
 
         .difficulty-tag {
-            width: 8px; /* Small circle size */
+            width: 8px;
             height: 8px;
-            border-radius: 50%; /* Make it a circle */
+            border-radius: 50%;
         }
-        .difficulty-E { background-color: var(--easy-color); } /* Use solid color */
+        .difficulty-E { background-color: var(--easy-color); }
         .difficulty-M { background-color: var(--medium-color); }
         .difficulty-H { background-color: var(--hard-color); }
 
@@ -316,10 +339,10 @@
     <div class="container">
         <h1>LeetCode Pattern Tracker</h1>
         <div class="overall-progress">
+            <div id="overall-progress-label" class="progress-label"></div>
             <div class="progress-bar">
                 <div id="overall-progress-bar" class="progress-bar-inner"></div>
             </div>
-            <div id="overall-progress-label" class="progress-label"></div>
         </div>
 
         <div id="tracker-content"></div>
@@ -409,7 +432,7 @@
                                     <div class="problem-item-right">
                                         <span class="difficulty-tag difficulty-${problem.difficulty}"></span>
                                         <a href="${problemLink}" target="_blank" rel="noopener noreferrer" class="problem-link" aria-label="Open problem on LeetCode">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 S0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                                         </a>
                                     </div>
                                 </li>
@@ -460,11 +483,16 @@
                 
                 const overallPercentage = totalProblems > 0 ? (totalCompleted / totalProblems) * 100 : 0;
                 document.getElementById('overall-progress-bar').style.width = `${overallPercentage}%`;
-                document.getElementById('overall-progress-label').textContent = `Overall Progress: ${totalCompleted} / ${totalProblems} (${overallPercentage.toFixed(1)}%)`;
+                
+                const progressLabel = document.getElementById('overall-progress-label');
+                progressLabel.innerHTML = `
+                    <span class="progress-title">Overall Progress</span>
+                    <span class="progress-stats">${totalCompleted} / ${totalProblems} (${overallPercentage.toFixed(1)}%)</span>
+                `;
             };
 
             contentDiv.addEventListener('click', (e) => {
-                if (e.target.closest('.problem-name-link')) {
+                if (e.target.closest('.problem-name-link') || e.target.closest('.problem-link')) {
                     return;
                 }
 
