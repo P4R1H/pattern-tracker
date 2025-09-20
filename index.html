@@ -16,6 +16,7 @@
             --text-color: #e0e0e0;
             --text-muted: #888888;
             
+            /* --- MODIFIED: Darker Purple --- */
             --primary-color: #8B5CF6;
             --primary-color-tint: rgba(139, 92, 246, 0.15);
             --primary-gradient-start: #7C3AED;
@@ -45,8 +46,9 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
+        /* --- MODIFIED: Reduced Width --- */
         .container {
-            max-width: 800px; /* Reverted to original width */
+            max-width: 768px; /* Was 800px */
             margin: 0 auto;
         }
         
@@ -57,13 +59,6 @@
             margin-bottom: 0.5rem;
             letter-spacing: -0.75px;
             color: var(--primary-color);
-        }
-
-        /* --- NEW: Reduce width of ONLY the title and progress bar --- */
-        h1, .overall-progress {
-            max-width: 98%;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         .overall-progress {
@@ -432,7 +427,7 @@
                                     <div class="problem-item-right">
                                         <span class="difficulty-tag difficulty-${problem.difficulty}"></span>
                                         <a href="${problemLink}" target="_blank" rel="noopener noreferrer" class="problem-link" aria-label="Open problem on LeetCode">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 S0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                                         </a>
                                     </div>
                                 </li>
