@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeetCode Pattern Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-color: #101010;
+            --border-color: #282828;
+            --hover-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --text-muted: #888888;
+            --primary-color: #A78BFA;
+            --primary-color-tint: rgba(167, 139, 250, 0.15);
+            --secondary-accent-color: #FFB86C;
+            --primary-gradient-start: #8B5CF6;
+            --progress-bg: #282828;
+
+            /* --- LeetCode Difficulty Colors --- */
+            --easy-color: #2DB55D;
+            --easy-color-tint: rgba(45, 181, 93, 0.15);
+            --medium-color: #FFC01E;
+            --medium-color-tint: rgba(255, 192, 30, 0.15);
+            --hard-color: #EF4743;
+            --hard-color-tint: rgba(239, 71, 67, 0.15);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 2rem;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.85rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            letter-spacing: -0.75px;
+        }
+
+        .overall-progress {
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: var(--progress-bg);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-color));
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            border-radius: 5px;
+        }
+
+        .progress-label {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .category {
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background-color: var(--card-color);
+            transition: background-color 0.2s;
+            overflow: hidden;
+        }
+
+        summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            list-style: none;
+            cursor: pointer;
+        }
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .category-header {
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+
+        .category-header:hover {
+            background-color: var(--hover-color);
+        }
+
+        .category-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .category-progress-stats {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            background-color: var(--progress-bg);
+            padding: 0.1rem 0.5rem;
+            border-radius: 6px;
+        }
+
+        .category-content {
+            padding: 0.5rem 1.5rem 1.5rem;
+        }
+
+        .pattern {
+            margin-top: 0.5rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--border-color);
+        }
+
+        .category-content .pattern:first-child {
+            margin-top: 0;
+        }
+
+        .pattern-header {
+            font-weight: 600;
+            color: var(--text-color);
+            padding: 0.5rem 0;
+        }
+
+        .pattern-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .pattern-num {
+            background-color: var(--primary-color-tint);
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 0.1rem 0.5rem;
+            border-radius: 6px;
+            min-width: 26px;
+            text-align: center;
+        }
+
+        .pattern-progress-stats {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .arrow {
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        details[open] > summary .arrow {
+            transform: rotate(90deg);
+        }
+
+        .category-header .arrow {
+            width: 24px;
+            height: 24px;
+        }
+
+        .pattern-header .arrow {
+            width: 20px;
+            height: 20px;
+        }
+
+        .problem-list {
+            list-style: none;
+            margin-top: 0.5rem;
+            margin-left: 0.5rem;
+            padding-left: 0.75rem;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .problem-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.35rem 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+        
+        .problem-item-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-grow: 1;
+            margin-right: 0.5rem;
+        }
+        
+        .problem-item-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .problem-item:hover {
+            background-color: var(--hover-color);
+        }
+
+        .problem-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .problem-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .problem-name-link {
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .problem-name-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .problem-name-link:hover .problem-title {
+            text-decoration: underline;
+        }
+
+        .problem-id {
+            color: var(--secondary-accent-color);
+            font-weight: 500;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+
+        .problem-title {
+            font-size: 0.9rem;
+            transition: color 0.2s, text-decoration 0.2s;
+        }
+
+        .problem-item input[type="checkbox"]:checked ~ .problem-name-link .problem-title {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .difficulty-tag {
+            width: 8px; /* Small circle size */
+            height: 8px;
+            border-radius: 50%; /* Make it a circle */
+        }
+        .difficulty-E { background-color: var(--easy-color); } /* Use solid color */
+        .difficulty-M { background-color: var(--medium-color); }
+        .difficulty-H { background-color: var(--hard-color); }
+
+        .problem-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            transition: color 0.2s, background-color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .problem-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .problem-link:hover {
+            color: var(--primary-color);
+            background-color: var(--primary-color-tint);
+        }
+    </style>
+    <script src="leetcodedata.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>LeetCode Pattern Tracker</h1>
+        <div class="overall-progress">
+            <div class="progress-bar">
+                <div id="overall-progress-bar" class="progress-bar-inner"></div>
+            </div>
+            <div id="overall-progress-label" class="progress-label"></div>
+        </div>
+
+        <div id="tracker-content"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const contentDiv = document.getElementById('tracker-content');
+            let completedProblems = JSON.parse(localStorage.getItem('completedProblems')) || {};
+
+            const getProblemId = (problemName) => {
+                const match = problemName.match(/^(\d+)/);
+                return match ? match[0] : problemName.replace(/\s+/g, '-');
+            };
+            
+            const generateLeetCodeLink = (problemName) => {
+                const nameSlug = problemName.replace(/^\d+\.\s*/, '').toLowerCase().replace(/\s+/g, '-');
+                return `https://leetcode.com/problems/${nameSlug}/`;
+            };
+
+            const renderTracker = () => {
+                contentDiv.innerHTML = '';
+                let patternCounter = 1;
+
+                leetcodeData.forEach((category, catIndex) => {
+                    const categoryElement = document.createElement('div');
+                    categoryElement.className = 'category';
+
+                    const categoryProblems = category.patterns.flatMap(p => p.problems);
+                    const totalInCategory = categoryProblems.length;
+                    const completedInCategory = categoryProblems.filter(p => completedProblems[getProblemId(p.name)]).length;
+
+                    let detailsHTML = `
+                        <details ${catIndex === 0 ? 'open' : ''}>
+                            <summary class="category-header">
+                                <div class="category-title">
+                                    <span>${category.category}</span>
+                                    <span class="category-progress-stats" id="cat-progress-${catIndex}">
+                                        ${completedInCategory} / ${totalInCategory}
+                                    </span>
+                                </div>
+                                <svg class="arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </summary>
+                            <div class="category-content">
+                    `;
+                    
+                    category.patterns.forEach((pattern, patIndex) => {
+                        const patternId = `pattern-${catIndex}-${patIndex}`;
+                        detailsHTML += `
+                            <div class="pattern">
+                                <details>
+                                    <summary class="pattern-header">
+                                        <div class="pattern-title">
+                                            <span class="pattern-num">${patternCounter}</span>
+                                            <span>${pattern.name}</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <span id="${patternId}-label" class="pattern-progress-stats"></span>
+                                            <svg class="arrow" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                        </div>
+                                    </summary>
+                                    <ul class="problem-list">
+                        `;
+
+                        pattern.problems.forEach(problem => {
+                            const problemId = getProblemId(problem.name);
+                            const isChecked = completedProblems[problemId] ? 'checked' : '';
+                            const problemLink = generateLeetCodeLink(problem.name);
+                            
+                            const problemMatch = problem.name.match(/^\d+\.?\s*(.*)$/);
+                            const problemNum = problem.name.match(/^(\d+\.?)/) ? problem.name.match(/^(\d+\.?)/)[1] : '';
+                            const problemTitle = problemMatch ? problemMatch[1] : problem.name;
+
+                            detailsHTML += `
+                                <li class="problem-item">
+                                    <div class="problem-item-left">
+                                        <label class="problem-label">
+                                            <input type="checkbox" data-id="${problemId}" ${isChecked}>
+                                        </label>
+                                        <a href="${problemLink}" target="_blank" class="problem-name-link" data-link="true">
+                                            <div class="problem-name-wrapper">
+                                                <span class="problem-id">${problemNum}</span>
+                                                <span class="problem-title">${problemTitle}</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="problem-item-right">
+                                        <span class="difficulty-tag difficulty-${problem.difficulty}"></span>
+                                        <a href="${problemLink}" target="_blank" rel="noopener noreferrer" class="problem-link" aria-label="Open problem on LeetCode">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                                        </a>
+                                    </div>
+                                </li>
+                            `;
+                        });
+
+                        detailsHTML += `</ul></details></div>`;
+                        patternCounter++;
+                    });
+
+                    detailsHTML += `</div></details>`;
+                    categoryElement.innerHTML = detailsHTML;
+                    contentDiv.appendChild(categoryElement);
+                });
+                updateAllProgress();
+            };
+
+            const updateAllProgress = () => {
+                let totalProblems = 0;
+                let totalCompleted = 0;
+
+                leetcodeData.forEach((category, catIndex) => {
+                    let categoryTotal = 0;
+                    let categoryCompleted = 0;
+
+                    category.patterns.forEach((pattern, patIndex) => {
+                        const patternId = `pattern-${catIndex}-${patIndex}`;
+                        const totalPatternProblems = pattern.problems.length;
+                        let completedPatternProblems = 0;
+
+                        pattern.problems.forEach(problem => {
+                            if (completedProblems[getProblemId(problem.name)]) {
+                                completedPatternProblems++;
+                            }
+                        });
+                        
+                        document.getElementById(`${patternId}-label`).textContent = `${completedPatternProblems} / ${totalPatternProblems}`;
+
+                        categoryTotal += totalPatternProblems;
+                        categoryCompleted += completedPatternProblems;
+                    });
+
+                    document.getElementById(`cat-progress-${catIndex}`).textContent = `${categoryCompleted} / ${categoryTotal}`;
+
+                    totalProblems += categoryTotal;
+                    totalCompleted += categoryCompleted;
+                });
+                
+                const overallPercentage = totalProblems > 0 ? (totalCompleted / totalProblems) * 100 : 0;
+                document.getElementById('overall-progress-bar').style.width = `${overallPercentage}%`;
+                document.getElementById('overall-progress-label').textContent = `Overall Progress: ${totalCompleted} / ${totalProblems} (${overallPercentage.toFixed(1)}%)`;
+            };
+
+            contentDiv.addEventListener('click', (e) => {
+                if (e.target.closest('.problem-name-link')) {
+                    return;
+                }
+
+                const problemItem = e.target.closest('.problem-item');
+                if (problemItem) {
+                    const checkbox = problemItem.querySelector('input[type="checkbox"]');
+                    if (checkbox && e.target !== checkbox) {
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                }
+            });
+
+            contentDiv.addEventListener('change', (e) => {
+                if (e.target.type === 'checkbox') {
+                    const problemId = e.target.dataset.id;
+                    if (e.target.checked) {
+                        completedProblems[problemId] = true;
+                    } else {
+                        delete completedProblems[problemId];
+                    }
+                    localStorage.setItem('completedProblems', JSON.stringify(completedProblems));
+                    updateAllProgress();
+                }
+            });
+
+            renderTracker();
+        });
+    </script>
+</body>
+</html>
