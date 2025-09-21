@@ -1,5 +1,9 @@
-// leetcodedata.js
-// Contains the leetcodeData array for the tracker
+/*
+category: string
+patterns: array
+patterns[i]: {name : string, problems : array}
+patterns[i]["problems"] = {name : string, difficulty : char/string}
+*/
 
 const leetcodeData = [
     {
