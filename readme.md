@@ -5,7 +5,7 @@
 This project is a web-based tracker for the most common interview leetcode patterns, Its original intention was just to let me organize my progress better but now it's open for public contribution.
 
 Basic features:
-- Visual progress tracking by category and pattern
+- Visual progress tracking by category, pattern & history
 - Easy marking of completed problems (progress saved in browser)
 - Add notes to problems
 - Dark/Light theme
