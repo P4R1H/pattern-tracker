@@ -3,11 +3,13 @@
 
 
 This project is a web-based tracker for the most common interview leetcode patterns, Its original intention was just to let me organize my progress better but now it's open for public contribution.
+
 Basic features:
 - Visual progress tracking by category and pattern
 - Easy marking of completed problems (progress saved in browser)
 - Add notes to problems
-- Modern, clean UI
+- Dark/Light theme
+- Export data
 
 
 You can employ it for personal use [here](https://p4r1h.github.io/pattern-tracker), If you want to add problems of your own that don't quite fit the guidelines, you can always fork the repo, add them and deploy to your pages.
