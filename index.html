@@ -13,10 +13,10 @@
             --card-color: #101010;
             --border-color: #282828;
             --hover-color: #1a1a1a;
+            --popup-color: #1a1a1a;
             --text-color: #e0e0e0;
             --text-muted: #888888;
             
-            /* --- MODIFIED: Darker Purple --- */
             --primary-color: #8B5CF6;
             --primary-color-tint: rgba(139, 92, 246, 0.15);
             --primary-gradient-start: #7C3AED;
@@ -24,7 +24,6 @@
             --secondary-accent-color: #FFB86C;
             --progress-bg: #282828;
 
-            /* --- LeetCode Difficulty Colors --- */
             --easy-color: #2DB55D;
             --medium-color: #FFC01E;
             --hard-color: #EF4743;
@@ -46,9 +45,8 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        /* --- MODIFIED: Reduced Width --- */
         .container {
-            max-width: 768px; /* Was 800px */
+            max-width: 768px;
             margin: 0 auto;
         }
         
@@ -238,7 +236,7 @@
         .problem-item-right {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem; /* Reduced gap for closer icons */
             flex-shrink: 0;
         }
 
@@ -300,13 +298,17 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
+            margin-right: 0.25rem;
         }
         .difficulty-E { background-color: var(--easy-color); }
         .difficulty-M { background-color: var(--medium-color); }
         .difficulty-H { background-color: var(--hard-color); }
 
-        .problem-link {
+        .icon-btn {
+            background: none;
+            border: none;
             color: var(--text-muted);
+            cursor: pointer;
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -316,17 +318,62 @@
             border-radius: 4px;
             transition: color 0.2s, background-color 0.2s;
             flex-shrink: 0;
+            padding: 0;
         }
 
-        .problem-link svg {
+        .icon-btn svg {
             width: 16px;
             height: 16px;
         }
 
-        .problem-link:hover {
+        .icon-btn:hover {
             color: var(--primary-color);
             background-color: var(--primary-color-tint);
         }
+
+        .notes-btn.has-note {
+            color: var(--primary-color);
+        }
+
+        /* Notes Popup */
+        .notes-popup {
+            display: none;
+            position: absolute;
+            width: 300px;
+            background-color: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 8px 26px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04) inset;
+            z-index: 1000;
+            padding: 0.5rem 0.55rem 0.6rem;
+            display: flex;
+            flex-direction: column;
+            animation: fadeInPop 140ms cubic-bezier(.25,1,.5,1);
+        }
+        @keyframes fadeInPop { from { opacity:0; transform: translateY(4px) scale(.97);} to { opacity:1; transform: translateY(0) scale(1);} }
+
+        #notes-textarea {
+            width: 100%;
+            min-height: 140px;
+            background: var(--hover-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            padding: 0.65rem 0.75rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            line-height: 1.4;
+            resize: vertical;
+            scrollbar-width: thin;
+        }
+
+        #notes-textarea:focus {
+            outline: none;
+            border-color: var(--border-color);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.05);
+        }
+
+    /* End notes popup */
     </style>
     <script src="leetcodedata.js"></script>
 </head>
@@ -343,10 +390,20 @@
         <div id="tracker-content"></div>
     </div>
 
+    <div id="notes-popup" class="notes-popup">
+        <div class="notes-mini-heading" style="font-size:0.62rem;font-weight:600;letter-spacing:.55px;color:var(--text-muted);text-transform:uppercase;margin:0 2px 4px 2px;">Notes</div>
+        <textarea id="notes-textarea" spellcheck="false"></textarea>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const contentDiv = document.getElementById('tracker-content');
             let completedProblems = JSON.parse(localStorage.getItem('completedProblems')) || {};
+            let problemNotes = JSON.parse(localStorage.getItem('problemNotes')) || {};
+
+            const notesPopup = document.getElementById('notes-popup');
+            const notesTextarea = document.getElementById('notes-textarea');
+            let currentProblemIdForNote = null;
 
             const getProblemId = (problemName) => {
                 const match = problemName.match(/^(\d+)/);
@@ -405,6 +462,7 @@
                         pattern.problems.forEach(problem => {
                             const problemId = getProblemId(problem.name);
                             const isChecked = completedProblems[problemId] ? 'checked' : '';
+                            const hasNote = problemNotes[problemId] ? 'has-note' : '';
                             const problemLink = generateLeetCodeLink(problem.name);
                             
                             const problemMatch = problem.name.match(/^\d+\.?\s*(.*)$/);
@@ -426,7 +484,10 @@
                                     </div>
                                     <div class="problem-item-right">
                                         <span class="difficulty-tag difficulty-${problem.difficulty}"></span>
-                                        <a href="${problemLink}" target="_blank" rel="noopener noreferrer" class="problem-link" aria-label="Open problem on LeetCode">
+                                        <button class="icon-btn notes-btn ${hasNote}" data-id="${problemId}" aria-label="Add or view notes">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                        </button>
+                                        <a href="${problemLink}" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="Open problem on LeetCode">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                                         </a>
                                     </div>
@@ -465,13 +526,11 @@
                         });
                         
                         document.getElementById(`${patternId}-label`).textContent = `${completedPatternProblems} / ${totalPatternProblems}`;
-
                         categoryTotal += totalPatternProblems;
                         categoryCompleted += completedPatternProblems;
                     });
 
                     document.getElementById(`cat-progress-${catIndex}`).textContent = `${categoryCompleted} / ${categoryTotal}`;
-
                     totalProblems += categoryTotal;
                     totalCompleted += categoryCompleted;
                 });
@@ -486,8 +545,47 @@
                 `;
             };
 
+            const saveCurrentNote = () => {
+                if (!currentProblemIdForNote) return;
+                const noteText = notesTextarea.value.trim();
+                const noteButton = document.querySelector(`.notes-btn[data-id="${currentProblemIdForNote}"]`);
+                if (noteText) {
+                    problemNotes[currentProblemIdForNote] = noteText;
+                    noteButton?.classList.add('has-note');
+                } else {
+                    delete problemNotes[currentProblemIdForNote];
+                    noteButton?.classList.remove('has-note');
+                }
+                localStorage.setItem('problemNotes', JSON.stringify(problemNotes));
+            };
+
+            const hideNotesPopup = (opts = { save: true }) => {
+                if (opts.save) saveCurrentNote();
+                notesPopup.style.display = 'none';
+                currentProblemIdForNote = null;
+            };
+
+            // Main click listener
             contentDiv.addEventListener('click', (e) => {
-                if (e.target.closest('.problem-name-link') || e.target.closest('.problem-link')) {
+                const notesBtn = e.target.closest('.notes-btn');
+                if (notesBtn) {
+                    e.stopPropagation();
+                    const problemId = notesBtn.dataset.id;
+                    currentProblemIdForNote = problemId;
+
+                    const rect = notesBtn.getBoundingClientRect();
+                    notesPopup.style.display = 'block';
+                    notesTextarea.value = problemNotes[problemId] || '';
+
+                    const popupWidth = notesPopup.offsetWidth;
+                    notesPopup.style.top = `${window.scrollY + rect.bottom + 8}px`;
+                    notesPopup.style.left = `${Math.max(8, Math.min(rect.left + rect.width / 2 - popupWidth / 2, document.documentElement.clientWidth - popupWidth - 8))}px`; // center within viewport margins
+                    
+                    notesTextarea.focus();
+                    return;
+                }
+
+                if (e.target.closest('.problem-name-link') || e.target.closest('.icon-btn')) {
                     return;
                 }
 
@@ -500,7 +598,41 @@
                     }
                 }
             });
+            
+            // Auto-save on blur
+            notesTextarea.addEventListener('blur', () => {
+                // If popup is still visible and focus is not going to a control inside popup, save
+                setTimeout(() => {
+                    if (!notesPopup.contains(document.activeElement)) {
+                        hideNotesPopup({ save: true });
+                    }
+                }, 0);
+            });
 
+            // (Close button removed; blur/outside/Escape still handle closing.)
+
+            // Global listener to close popup
+            document.addEventListener('click', (e) => {
+                if (notesPopup.style.display === 'block' && !notesPopup.contains(e.target) && !e.target.closest('.notes-btn')) {
+                    hideNotesPopup({ save: true });
+                }
+            });
+
+            // Escape key closes and saves
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && notesPopup.style.display === 'block') {
+                    hideNotesPopup({ save: true });
+                }
+            });
+
+            window.addEventListener('scroll', () => {
+                if (notesPopup.style.display === 'block') hideNotesPopup({ save: true });
+            }, true);
+            window.addEventListener('resize', () => {
+                if (notesPopup.style.display === 'block') hideNotesPopup({ save: true });
+            });
+
+            // Checkbox change listener
             contentDiv.addEventListener('change', (e) => {
                 if (e.target.type === 'checkbox') {
                     const problemId = e.target.dataset.id;
@@ -513,6 +645,7 @@
                     updateAllProgress();
                 }
             });
+
             renderTracker();
         });
     </script>

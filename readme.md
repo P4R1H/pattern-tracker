@@ -6,6 +6,7 @@ This project is a web-based tracker for the most common interview leetcode patte
 Basic features:
 - Visual progress tracking by category and pattern
 - Easy marking of completed problems (progress saved in browser)
+- Add notes to problems
 - Modern, clean UI
 
 
