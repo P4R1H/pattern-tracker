@@ -27,6 +27,9 @@
             --easy-color: #2DB55D;
             --medium-color: #FFC01E;
             --hard-color: #EF4743;
+            --danger-color: #EF4743;
+            --danger-color-tint: rgba(239, 71, 67, 0.15);
+            --danger-border-color: rgba(239, 71, 67, 0.4);
         }
 
         *, *::before, *::after {
@@ -50,13 +53,20 @@
             margin: 0 auto;
         }
         
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
         h1 {
             text-align: left;
             font-weight: 700;
             font-size: 1.85rem;
-            margin-bottom: 0.5rem;
             letter-spacing: -0.75px;
             color: var(--primary-color);
+            margin-bottom: 0;
         }
 
         .overall-progress {
@@ -236,7 +246,7 @@
         .problem-item-right {
             display: flex;
             align-items: center;
-            gap: 0.5rem; /* Reduced gap for closer icons */
+            gap: 0.5rem;
             flex-shrink: 0;
         }
 
@@ -335,7 +345,6 @@
             color: var(--primary-color);
         }
 
-        /* Notes Popup */
         .notes-popup {
             display: none;
             position: absolute;
@@ -373,13 +382,283 @@
             box-shadow: 0 0 0 1px rgba(255,255,255,0.05);
         }
 
-    /* End notes popup */
+        /* --- Settings Modal --- */
+        .settings-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(6px) saturate(120%);
+            -webkit-backdrop-filter: blur(6px) saturate(120%);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeInBackdrop 200ms ease-out;
+        }
+        @keyframes fadeInBackdrop { from { opacity: 0; } to { opacity: 1; } }
+
+        .settings-modal {
+            background-color: #000;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 550px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: fadeInPop 200ms cubic-bezier(.25,1,.5,1);
+        }
+
+        body.light-theme .settings-modal { background-color: var(--card-color); }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+            background: #000;
+            gap: 0.75rem;
+        }
+        body.light-theme .settings-header { background: var(--card-color); }
+
+        .settings-header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Tighten icon alignment just inside header */
+        .settings-header .icon-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+        }
+        .settings-header .icon-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .settings-content {
+            padding: 1rem;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none; 
+        }
+        .settings-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .settings-card {
+            background-color: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        .settings-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .settings-card-header {
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        .settings-card .settings-item:first-of-type {
+             border-top: none;
+        }
+        
+        .settings-item-label {
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
+            padding-right: 1rem;
+        }
+
+        .settings-item-label .title {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+        .settings-item-label .description {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .settings-item-action {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        
+        .btn {
+            background-color: var(--progress-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background-color: var(--hover-color);
+            border-color: #444;
+        }
+        .btn svg {
+            width: 16px;
+            height: 16px;
+            color: var(--text-muted);
+        }
+        
+        .btn.btn-danger { color: var(--danger-color); }
+        .btn.btn-danger:hover {
+            background-color: var(--danger-color-tint);
+            border-color: var(--danger-border-color);
+        }
+
+        .settings-card.danger-zone {
+            border-color: var(--danger-border-color);
+        }
+        
+    /* History scroll fade */
+        .history-wrapper {
+            position: relative;
+            max-height: 200px; /* Set a max height to make it scrollable */
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none; 
+        }
+        .history-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+        .history-wrapper.is-scrollable::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(to top, var(--card-color) 20%, transparent);
+            pointer-events: none;
+        }
+        .history-list { padding: 1rem; }
+        .history-list .history-day { margin-bottom: 1.5rem; }
+        .history-list .history-day:last-child { margin-bottom: 0; }
+        .history-date { font-weight: 500; font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .history-problems { list-style: none; padding-left: 1rem; border-left: 1px solid var(--border-color); }
+        .history-problems li { padding: 0.2rem 0; font-size: 0.9rem; color: var(--text-muted); }
+        
+        .star-count {
+            background-color: var(--border-color);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.1rem 0.5rem;
+            border-radius: 1rem;
+            margin-left: 0.25rem;
+        }
+
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+        .theme-toggle svg {
+            width: 16px;
+            height: 16px;
+            color: var(--text-muted);
+            transition: color 0.2s ease;
+        }
+        .theme-toggle-input {
+            display: none;
+        }
+        .theme-toggle-switch {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            background-color: var(--progress-bg);
+            border-radius: 11px;
+            transition: background-color 0.2s ease;
+            border: 1px solid var(--border-color);
+        }
+        .theme-toggle-switch::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: var(--text-muted);
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .theme-toggle-input:checked ~ .theme-toggle-switch {
+            background-color: var(--primary-color);
+        }
+        .theme-toggle-input:checked ~ .theme-toggle-switch::before {
+            transform: translateX(18px);
+            background-color: white;
+        }
+        /* Icon colors tied to theme state */
+        .theme-toggle .moon-icon { color: var(--text-color); }
+        .theme-toggle .sun-icon { color: var(--text-muted); }
+        .theme-toggle.is-light-mode .moon-icon { color: var(--text-muted); }
+        .theme-toggle.is-light-mode .sun-icon { color: var(--text-color); }
+
+        /* Light theme variable overrides */
+        body.light-theme {
+            --bg-color: #FFFFFF;
+            --card-color: #FAFAFA;
+            --border-color: #E2E2E8;
+            --hover-color: #F2F2F6;
+            --popup-color: #FFFFFF;
+            --text-color: #202127;
+            --text-muted: #6A6F7A;
+            --progress-bg: #E6E6ED;
+            --primary-color-tint: rgba(139, 92, 246, 0.15);
+            --danger-color-tint: rgba(239, 71, 67, 0.10);
+            --danger-border-color: rgba(239, 71, 67, 0.35);
+        }
+
     </style>
     <script src="leetcodedata.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>LeetCode Pattern Tracker</h1>
+        <div class="main-header">
+            <h1>LeetCode Pattern Tracker</h1>
+            <button id="settings-btn" class="icon-btn" aria-label="Open settings">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+        </div>
         <div class="overall-progress">
             <div id="overall-progress-label" class="progress-label"></div>
             <div class="progress-bar">
@@ -394,16 +673,115 @@
         <div class="notes-mini-heading" style="font-size:0.62rem;font-weight:600;letter-spacing:.55px;color:var(--text-muted);text-transform:uppercase;margin:0 2px 4px 2px;">Notes</div>
         <textarea id="notes-textarea" spellcheck="false"></textarea>
     </div>
+    
+    <div id="settings-backdrop" class="settings-backdrop">
+        <div id="settings-modal" class="settings-modal">
+            <div class="settings-header">
+                <h2>Settings</h2>
+                <button id="settings-close-btn" class="icon-btn" aria-label="Close settings">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="settings-content">
+
+                <div class="settings-card">
+                    <div class="settings-item">
+                        <div class="settings-item-label">
+                            <span class="title">GitHub Repository</span>
+                            <span class="description">Help support the project by leaving a star.</span>
+                        </div>
+                        <div class="settings-item-action">
+                             <a href="https://github.com/P4R1H/pattern-tracker" target="_blank" rel="noopener noreferrer" class="btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                                <span>Star</span>
+                                <span id="github-star-count" class="star-count">...</span>
+                            </a>
+                        </div>
+                    </div>
+                     <div class="settings-item">
+                        <div class="settings-item-label">
+                            <span class="title">Appearance</span>
+                            <span class="description">Toggle between light and dark themes.</span>
+                        </div>
+                        <div class="settings-item-action">
+                            <label class="theme-toggle" id="theme-toggle" for="theme-toggle-input">
+                                <input type="checkbox" id="theme-toggle-input" class="theme-toggle-input">
+                                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                                <div class="theme-toggle-switch"></div>
+                                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                     <div class="settings-item">
+                        <div class="settings-item-label">
+                            <span class="title">Export Data</span>
+                            <span class="description">Save your progress to a JSON file.</span>
+                        </div>
+                        <div class="settings-item-action">
+                            <button id="export-data-btn" class="btn">Export</button>
+                            <input type="file" id="import-file-input" accept=".json" style="display: none;">
+                        </div>
+                    </div>
+                    <div class="settings-item">
+                        <div class="settings-item-label">
+                            <span class="title">Import Data</span>
+                            <span class="description">Load progress from a backup file.</span>
+                        </div>
+                        <div class="settings-item-action">
+                            <button id="import-data-btn" class="btn">Import</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card danger-zone">
+                     <div class="settings-item">
+                        <div class="settings-item-label">
+                            <span class="title">Reset Progress</span>
+                            <span class="description">This action cannot be undone.</span>
+                        </div>
+                        <div class="settings-item-action">
+                           <button id="reset-progress-btn" class="btn btn-danger">Reset</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-card">
+                    <div class="settings-card-header">History</div>
+                    <div class="history-wrapper">
+                        <div id="history-list-container" class="history-list"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const contentDiv = document.getElementById('tracker-content');
+            
             let completedProblems = JSON.parse(localStorage.getItem('completedProblems')) || {};
             let problemNotes = JSON.parse(localStorage.getItem('problemNotes')) || {};
 
             const notesPopup = document.getElementById('notes-popup');
             const notesTextarea = document.getElementById('notes-textarea');
             let currentProblemIdForNote = null;
+            
+            const settingsBtn = document.getElementById('settings-btn');
+            const settingsBackdrop = document.getElementById('settings-backdrop');
+            const settingsCloseBtn = document.getElementById('settings-close-btn');
+            const historyContainer = document.getElementById('history-list-container');
+            const exportBtn = document.getElementById('export-data-btn');
+            const importBtn = document.getElementById('import-data-btn');
+            const importFileInput = document.getElementById('import-file-input');
+            const resetBtn = document.getElementById('reset-progress-btn');
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeToggleInput = document.getElementById('theme-toggle-input');
+            
+            // Legacy migration removed (boolean -> object w/ date). If older data resurfaces, reintroduce mapping here.
 
             const getProblemId = (problemName) => {
                 const match = problemName.match(/^(\d+)/);
@@ -418,89 +796,31 @@
             const renderTracker = () => {
                 contentDiv.innerHTML = '';
                 let patternCounter = 1;
-
                 leetcodeData.forEach((category, catIndex) => {
                     const categoryElement = document.createElement('div');
                     categoryElement.className = 'category';
-
                     const categoryProblems = category.patterns.flatMap(p => p.problems);
                     const totalInCategory = categoryProblems.length;
                     const completedInCategory = categoryProblems.filter(p => completedProblems[getProblemId(p.name)]).length;
-
-                    let detailsHTML = `
-                        <details ${catIndex === 0 ? 'open' : ''}>
-                            <summary class="category-header">
-                                <div class="category-title">
-                                    <span>${category.category}</span>
-                                    <span class="category-progress-stats" id="cat-progress-${catIndex}">
-                                        ${completedInCategory} / ${totalInCategory}
-                                    </span>
-                                </div>
-                                <svg class="arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                            </summary>
-                            <div class="category-content">
-                    `;
-                    
+                    let categoryHTML = `<details ${catIndex === 0 ? 'open' : ''}><summary class="category-header"><div class="category-title"><span>${category.category}</span><span class="category-progress-stats" id="cat-progress-${catIndex}">${completedInCategory} / ${totalInCategory}</span></div><svg class="arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></summary><div class="category-content">`;
                     category.patterns.forEach((pattern, patIndex) => {
                         const patternId = `pattern-${catIndex}-${patIndex}`;
-                        detailsHTML += `
-                            <div class="pattern">
-                                <details>
-                                    <summary class="pattern-header">
-                                        <div class="pattern-title">
-                                            <span class="pattern-num">${patternCounter}</span>
-                                            <span>${pattern.name}</span>
-                                        </div>
-                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                            <span id="${patternId}-label" class="pattern-progress-stats"></span>
-                                            <svg class="arrow" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                                        </div>
-                                    </summary>
-                                    <ul class="problem-list">
-                        `;
-
+                        categoryHTML += `<div class="pattern"><details><summary class="pattern-header"><div class="pattern-title"><span class="pattern-num">${patternCounter}</span><span>${pattern.name}</span></div><div style="display: flex; align-items: center; gap: 0.5rem;"><span id="${patternId}-label" class="pattern-progress-stats"></span><svg class="arrow" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></div></summary><ul class="problem-list">`;
                         pattern.problems.forEach(problem => {
                             const problemId = getProblemId(problem.name);
                             const isChecked = completedProblems[problemId] ? 'checked' : '';
                             const hasNote = problemNotes[problemId] ? 'has-note' : '';
                             const problemLink = generateLeetCodeLink(problem.name);
-                            
                             const problemMatch = problem.name.match(/^\d+\.?\s*(.*)$/);
                             const problemNum = problem.name.match(/^(\d+\.?)/) ? problem.name.match(/^(\d+\.?)/)[1] : '';
                             const problemTitle = problemMatch ? problemMatch[1] : problem.name;
-
-                            detailsHTML += `
-                                <li class="problem-item">
-                                    <div class="problem-item-left">
-                                        <label class="problem-label">
-                                            <input type="checkbox" data-id="${problemId}" ${isChecked}>
-                                        </label>
-                                        <a href="${problemLink}" target="_blank" class="problem-name-link" data-link="true">
-                                            <div class="problem-name-wrapper">
-                                                <span class="problem-id">${problemNum}</span>
-                                                <span class="problem-title">${problemTitle}</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="problem-item-right">
-                                        <span class="difficulty-tag difficulty-${problem.difficulty}"></span>
-                                        <button class="icon-btn notes-btn ${hasNote}" data-id="${problemId}" aria-label="Add or view notes">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                                        </button>
-                                        <a href="${problemLink}" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="Open problem on LeetCode">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                                        </a>
-                                    </div>
-                                </li>
-                            `;
+                            categoryHTML += `<li class="problem-item"><div class="problem-item-left"><label class="problem-label"><input type="checkbox" data-id="${problemId}" ${isChecked}></label><a href="${problemLink}" target="_blank" class="problem-name-link" data-link="true"><div class="problem-name-wrapper"><span class="problem-id">${problemNum}</span><span class="problem-title">${problemTitle}</span></div></a></div><div class="problem-item-right"><span class="difficulty-tag difficulty-${problem.difficulty}"></span><button class="icon-btn notes-btn ${hasNote}" data-id="${problemId}" aria-label="Add or view notes"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><a href="${problemLink}" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="Open problem on LeetCode"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a></div></li>`;
                         });
-
-                        detailsHTML += `</ul></details></div>`;
+                        categoryHTML += `</ul></details></div>`;
                         patternCounter++;
                     });
-
-                    detailsHTML += `</div></details>`;
-                    categoryElement.innerHTML = detailsHTML;
+                    categoryHTML += `</div></details>`;
+                    categoryElement.innerHTML = categoryHTML;
                     contentDiv.appendChild(categoryElement);
                 });
                 updateAllProgress();
@@ -509,40 +829,30 @@
             const updateAllProgress = () => {
                 let totalProblems = 0;
                 let totalCompleted = 0;
-
                 leetcodeData.forEach((category, catIndex) => {
                     let categoryTotal = 0;
                     let categoryCompleted = 0;
-
                     category.patterns.forEach((pattern, patIndex) => {
                         const patternId = `pattern-${catIndex}-${patIndex}`;
                         const totalPatternProblems = pattern.problems.length;
                         let completedPatternProblems = 0;
-
                         pattern.problems.forEach(problem => {
                             if (completedProblems[getProblemId(problem.name)]) {
                                 completedPatternProblems++;
                             }
                         });
-                        
                         document.getElementById(`${patternId}-label`).textContent = `${completedPatternProblems} / ${totalPatternProblems}`;
                         categoryTotal += totalPatternProblems;
                         categoryCompleted += completedPatternProblems;
                     });
-
                     document.getElementById(`cat-progress-${catIndex}`).textContent = `${categoryCompleted} / ${categoryTotal}`;
                     totalProblems += categoryTotal;
                     totalCompleted += categoryCompleted;
                 });
-                
                 const overallPercentage = totalProblems > 0 ? (totalCompleted / totalProblems) * 100 : 0;
                 document.getElementById('overall-progress-bar').style.width = `${overallPercentage}%`;
-                
                 const progressLabel = document.getElementById('overall-progress-label');
-                progressLabel.innerHTML = `
-                    <span class="progress-title">Overall Progress</span>
-                    <span class="progress-stats">${totalCompleted} / ${totalProblems} (${overallPercentage.toFixed(1)}%)</span>
-                `;
+                progressLabel.innerHTML = `<span class="progress-title">Overall Progress</span><span class="progress-stats">${totalCompleted} / ${totalProblems} (${overallPercentage.toFixed(1)}%)</span>`;
             };
 
             const saveCurrentNote = () => {
@@ -564,31 +874,99 @@
                 notesPopup.style.display = 'none';
                 currentProblemIdForNote = null;
             };
+            
+            const renderHistory = () => {
+                const historyWrapper = historyContainer.parentElement;
+                historyContainer.innerHTML = '';
+                
+                const historyByDate = {};
+                const allProblemsMap = new Map();
+                leetcodeData.flatMap(c => c.patterns).flatMap(p => p.problems).forEach(prob => {
+                    allProblemsMap.set(getProblemId(prob.name), prob.name);
+                });
+                for (const problemId in completedProblems) {
+                    const completion = completedProblems[problemId];
+                    if (completion && completion.date) {
+                        if (!historyByDate[completion.date]) {
+                            historyByDate[completion.date] = [];
+                        }
+                        const problemName = allProblemsMap.get(problemId) || `Problem ID: ${problemId}`;
+                        historyByDate[completion.date].push(problemName);
+                    }
+                }
+                const sortedDates = Object.keys(historyByDate).sort().reverse();
+                
+                if (sortedDates.length === 0) {
+                    historyContainer.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">No completion history yet. Solve some problems!</p>';
+                    historyWrapper.classList.remove('is-scrollable');
+                    return;
+                }
 
-            // Main click listener
+                sortedDates.forEach(date => {
+                    const dateObj = new Date(date);
+                    const formattedDate = dateObj.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+                    const dayDiv = document.createElement('div');
+                    dayDiv.className = 'history-day';
+                    const dateHeader = document.createElement('h4');
+                    dateHeader.className = 'history-date';
+                    dateHeader.textContent = formattedDate;
+                    const problemsList = document.createElement('ul');
+                    problemsList.className = 'history-problems';
+                    historyByDate[date].forEach(problemName => {
+                        const li = document.createElement('li');
+                        li.textContent = problemName.replace(/^\d+\.?\s*/, '');
+                        problemsList.appendChild(li);
+                    });
+                    dayDiv.appendChild(dateHeader);
+                    dayDiv.appendChild(problemsList);
+                    historyContainer.appendChild(dayDiv);
+                });
+
+                // Check for scrollability after rendering
+                if (historyWrapper.scrollHeight > historyWrapper.clientHeight) {
+                    historyWrapper.classList.add('is-scrollable');
+                } else {
+                    historyWrapper.classList.remove('is-scrollable');
+                }
+            };
+
+            const fetchGitHubStars = () => {
+                const starCountEl = document.getElementById('github-star-count');
+                fetch('https://api.github.com/repos/P4R1H/pattern-tracker')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.stargazers_count !== undefined) {
+                            starCountEl.textContent = data.stargazers_count;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Failed to fetch GitHub stars:', error);
+                        starCountEl.textContent = 'N/A';
+                    });
+            };
+
             contentDiv.addEventListener('click', (e) => {
                 const notesBtn = e.target.closest('.notes-btn');
                 if (notesBtn) {
                     e.stopPropagation();
                     const problemId = notesBtn.dataset.id;
+                    if (currentProblemIdForNote === problemId && notesPopup.style.display === 'block') {
+                        hideNotesPopup();
+                        return;
+                    }
                     currentProblemIdForNote = problemId;
-
                     const rect = notesBtn.getBoundingClientRect();
                     notesPopup.style.display = 'block';
                     notesTextarea.value = problemNotes[problemId] || '';
-
                     const popupWidth = notesPopup.offsetWidth;
                     notesPopup.style.top = `${window.scrollY + rect.bottom + 8}px`;
-                    notesPopup.style.left = `${Math.max(8, Math.min(rect.left + rect.width / 2 - popupWidth / 2, document.documentElement.clientWidth - popupWidth - 8))}px`; // center within viewport margins
-                    
+                    notesPopup.style.left = `${Math.max(8, Math.min(rect.left + rect.width / 2 - popupWidth / 2, document.documentElement.clientWidth - popupWidth - 8))}px`;
                     notesTextarea.focus();
                     return;
                 }
-
-                if (e.target.closest('.problem-name-link') || e.target.closest('.icon-btn')) {
+                if (e.target.closest('.problem-name-link') || e.target.closest('.icon-btn[href]')) {
                     return;
                 }
-
                 const problemItem = e.target.closest('.problem-item');
                 if (problemItem) {
                     const checkbox = problemItem.querySelector('input[type="checkbox"]');
@@ -599,45 +977,29 @@
                 }
             });
             
-            // Auto-save on blur
             notesTextarea.addEventListener('blur', () => {
-                // If popup is still visible and focus is not going to a control inside popup, save
-                setTimeout(() => {
-                    if (!notesPopup.contains(document.activeElement)) {
-                        hideNotesPopup({ save: true });
-                    }
-                }, 0);
+                setTimeout(() => { if (!notesPopup.contains(document.activeElement)) hideNotesPopup({ save: true }); }, 0);
             });
 
-            // (Close button removed; blur/outside/Escape still handle closing.)
-
-            // Global listener to close popup
             document.addEventListener('click', (e) => {
                 if (notesPopup.style.display === 'block' && !notesPopup.contains(e.target) && !e.target.closest('.notes-btn')) {
                     hideNotesPopup({ save: true });
                 }
             });
-
-            // Escape key closes and saves
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && notesPopup.style.display === 'block') {
-                    hideNotesPopup({ save: true });
+                if (e.key === 'Escape') {
+                   if (notesPopup.style.display === 'block') hideNotesPopup({ save: true });
+                   if (settingsBackdrop.style.display === 'flex') settingsBackdrop.style.display = 'none';
                 }
             });
+            window.addEventListener('scroll', () => { if (notesPopup.style.display === 'block') hideNotesPopup({ save: true }); }, true);
+            window.addEventListener('resize', () => { if (notesPopup.style.display === 'block') hideNotesPopup({ save: true }); });
 
-            window.addEventListener('scroll', () => {
-                if (notesPopup.style.display === 'block') hideNotesPopup({ save: true });
-            }, true);
-            window.addEventListener('resize', () => {
-                if (notesPopup.style.display === 'block') hideNotesPopup({ save: true });
-            });
-
-            // Checkbox change listener
             contentDiv.addEventListener('change', (e) => {
                 if (e.target.type === 'checkbox') {
                     const problemId = e.target.dataset.id;
                     if (e.target.checked) {
-                        completedProblems[problemId] = true;
+                        completedProblems[problemId] = { date: new Date().toISOString().split('T')[0] };
                     } else {
                         delete completedProblems[problemId];
                     }
@@ -645,6 +1007,98 @@
                     updateAllProgress();
                 }
             });
+            
+            settingsBtn.addEventListener('click', () => {
+                renderHistory();
+                fetchGitHubStars();
+                settingsBackdrop.style.display = 'flex';
+            });
+            settingsCloseBtn.addEventListener('click', () => settingsBackdrop.style.display = 'none');
+            settingsBackdrop.addEventListener('click', (e) => {
+                if (e.target === settingsBackdrop) {
+                    settingsBackdrop.style.display = 'none';
+                }
+            });
+            
+            exportBtn.addEventListener('click', () => {
+                const dataToExport = { completedProblems, problemNotes };
+                const dataStr = JSON.stringify(dataToExport, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `leetcode-tracker-backup-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+
+            importBtn.addEventListener('click', () => importFileInput.click());
+            
+            importFileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        if (importedData.completedProblems && importedData.problemNotes) {
+                           if (confirm('Are you sure you want to import this data? This will overwrite your current progress.')) {
+                                completedProblems = importedData.completedProblems;
+                                problemNotes = importedData.problemNotes;
+                                localStorage.setItem('completedProblems', JSON.stringify(completedProblems));
+                                localStorage.setItem('problemNotes', JSON.stringify(problemNotes));
+                                location.reload();
+                           }
+                        } else {
+                            alert('Invalid file format. The file must contain "completedProblems" and "problemNotes" keys.');
+                        }
+                    } catch (error) {
+                        alert('Error reading or parsing the file. Please ensure it is a valid JSON file.');
+                    }
+                };
+                reader.readAsText(file);
+                event.target.value = '';
+            });
+
+            resetBtn.addEventListener('click', () => {
+                if (confirm('ARE YOU SURE?\nThis will permanently delete all your tracked progress and notes. This action cannot be undone.')) {
+                    localStorage.removeItem('completedProblems');
+                    localStorage.removeItem('problemNotes');
+                    location.reload();
+                }
+            });
+
+            // Theme initialization & persistence
+            const THEME_KEY = 'themePreference';
+            const applyTheme = (mode) => {
+                const isLight = mode === 'light';
+                document.body.classList.toggle('light-theme', isLight);
+                themeToggle.classList.toggle('is-light-mode', isLight);
+                themeToggleInput.checked = isLight;
+            };
+            // Load saved theme or respect prefers-color-scheme
+            const savedTheme = localStorage.getItem(THEME_KEY);
+            if (savedTheme === 'light' || savedTheme === 'dark') {
+                applyTheme(savedTheme);
+            } else {
+                // fallback to system preference
+                const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+                applyTheme(prefersLight ? 'light' : 'dark');
+            }
+            // Respond to user toggle
+            themeToggleInput.addEventListener('change', () => {
+                const newMode = themeToggleInput.checked ? 'light' : 'dark';
+                applyTheme(newMode);
+                localStorage.setItem(THEME_KEY, newMode);
+            });
+            // Optional: react to system changes if user hasn't explicitly chosen yet
+            if (!savedTheme && window.matchMedia) {
+                window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
+                    applyTheme(e.matches ? 'light' : 'dark');
+                });
+            }
 
             renderTracker();
         });
