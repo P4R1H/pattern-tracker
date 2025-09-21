@@ -411,7 +411,7 @@
             };
             
             const generateLeetCodeLink = (problemName) => {
-                const nameSlug = problemName.replace(/^\d+\.\s*/, '').toLowerCase().replace(/\s+/g, '-');
+                const nameSlug = problemName.replace(/^\d+\.\s*/, '').toLowerCase().replace(/\s+/g, '-').replace(/-+/g, '-');
                 return `https://leetcode.com/problems/${nameSlug}/`;
             };
 
