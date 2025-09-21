@@ -9,7 +9,7 @@ Basic features:
 - Modern, clean UI
 
 
-You can employ it for personal use [here](https://p4r1h.github.io/pattern-tracker)
+You can employ it for personal use [here](https://p4r1h.github.io/pattern-tracker), If you want to add problems of your own that don't quite fit the guidelines, you can always fork the repo, add them and deploy to your pages.
 
 
 ## Contributing
