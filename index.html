@@ -346,6 +346,7 @@
         }
 
         .notes-popup {
+            /* Hidden by default; second display declaration previously overrode this causing it to appear on load */
             display: none;
             position: absolute;
             width: 300px;
@@ -355,8 +356,7 @@
             box-shadow: 0 8px 26px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04) inset;
             z-index: 1000;
             padding: 0.5rem 0.55rem 0.6rem;
-            display: flex;
-            flex-direction: column;
+            flex-direction: column; /* Will act once we set display:flex in JS when opening */
             animation: fadeInPop 140ms cubic-bezier(.25,1,.5,1);
         }
         @keyframes fadeInPop { from { opacity:0; transform: translateY(4px) scale(.97);} to { opacity:1; transform: translateY(0) scale(1);} }
@@ -967,7 +967,7 @@
                     }
                     currentProblemIdForNote = problemId;
                     const rect = notesBtn.getBoundingClientRect();
-                    notesPopup.style.display = 'block';
+                    notesPopup.style.display = 'flex';
                     notesTextarea.value = problemNotes[problemId] || '';
                     const popupWidth = notesPopup.offsetWidth;
                     notesPopup.style.top = `${window.scrollY + rect.bottom + 8}px`;
@@ -993,18 +993,18 @@
             });
 
             document.addEventListener('click', (e) => {
-                if (notesPopup.style.display === 'block' && !notesPopup.contains(e.target) && !e.target.closest('.notes-btn')) {
+                if (notesPopup.style.display === 'flex' && !notesPopup.contains(e.target) && !e.target.closest('.notes-btn')) {
                     hideNotesPopup({ save: true });
                 }
             });
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
-                   if (notesPopup.style.display === 'block') hideNotesPopup({ save: true });
+                   if (notesPopup.style.display === 'flex') hideNotesPopup({ save: true });
                    if (settingsBackdrop.style.display === 'flex') settingsBackdrop.style.display = 'none';
                 }
             });
-            window.addEventListener('scroll', () => { if (notesPopup.style.display === 'block') hideNotesPopup({ save: true }); }, true);
-            window.addEventListener('resize', () => { if (notesPopup.style.display === 'block') hideNotesPopup({ save: true }); });
+            window.addEventListener('scroll', () => { if (notesPopup.style.display === 'flex') hideNotesPopup({ save: true }); }, true);
+            window.addEventListener('resize', () => { if (notesPopup.style.display === 'flex') hideNotesPopup({ save: true }); });
 
             contentDiv.addEventListener('change', (e) => {
                 if (e.target.type === 'checkbox') {
